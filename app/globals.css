@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+
+/* Aurora Text Animation */
+.aurora-text {
+  background: linear-gradient(
+    -45deg,
+    #ff6ec4,
+    #7873f5,
+    #4ade80,
+    #facc15b7,
+    #f472b6,
+    #38bdf8,
+    #a78bfa
+  );
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: aurora 8s ease infinite;
+}
+
+@keyframes aurora {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+/* Matte Black Embossed Background */
+body {
+  background: radial-gradient(circle at top left, #1a1a1a, #000000);
+  color: white;
+}
+
+/* Optional subtle embossing texture */
+.embossed-bg {
+  background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
+  box-shadow: inset 5px 5px 10px #0a0a0a, inset -5px -5px 10px #222;
+}
