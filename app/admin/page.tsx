@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import Navbar from "@/components/Navbar";
-import Papa from "papaparse";
+// instead of: import Papa from "papaparse";
+const Papa = require("papaparse");
+
 import { saveAs } from "file-saver";
 
 interface Registration {
