@@ -5,6 +5,14 @@ import { supabase } from "@/lib/supabaseClient";
 import Navbar from "@/components/Navbar";
 import Papa from "papaparse";
 import { saveAs } from "file-saver";
+import { Orbitron } from 'next/font/google';
+
+// Use Orbitron font for a tech-themed look
+const orbitron = Orbitron({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-orbitron",
+});
 
 // Interface defining the structure of a registration record
 interface Registration {
@@ -29,6 +37,8 @@ export default function AdminPage() {
   const [filterStatus, setFilterStatus] = useState("all"); // 'all', 'verified', or 'pending'
 
   // Fetch the admin password from environment variables
+  // WARNING: This is a client-side component. Using NEXT_PUBLIC_ADMIN_PASSWORD here
+  // exposes the password to the public. For production, consider a secure server-side check.
   const correctPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
 
   // Effect to fetch registration data once authenticated
@@ -118,32 +128,35 @@ export default function AdminPage() {
   // --- Login Screen ---
   if (!authenticated) {
     return (
-      <main className="embossed-bg min-h-screen flex flex-col">
-        <Navbar />
-        <section className="flex-grow flex items-center justify-center p-4">
-          <form
-            className="w-full max-w-md bg-white rounded-3xl shadow-xl p-10 flex flex-col gap-6"
-            onSubmit={handleLogin}
+      <main className="embossed-bg min-h-screen flex flex-col items-center justify-center p-4">
+        <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-0">
+          <div className="absolute top-10 left-10 w-24 h-24 bg-indigo-500 rounded-full mix-blend-screen filter blur-3xl opacity-40 animate-pulse"></div>
+          <div className="absolute bottom-20 right-20 w-32 h-32 bg-pink-500 rounded-full mix-blend-screen filter blur-3xl opacity-40 animate-pulse"></div>
+          <div className="absolute top-1/4 right-1/4 w-28 h-28 bg-blue-500 rounded-full mix-blend-screen filter blur-3xl opacity-40 animate-pulse animation-delay-2000"></div>
+          <div className="absolute bottom-1/3 left-1/4 w-36 h-36 bg-purple-500 rounded-full mix-blend-screen filter blur-3xl opacity-40 animate-pulse animation-delay-4000"></div>
+        </div>
+        <form
+          className="relative z-10 w-full max-w-md bg-white/10 backdrop-blur-md rounded-3xl shadow-xl p-10 flex flex-col gap-6"
+          onSubmit={handleLogin}
+        >
+          <h1 className={`text-3xl font-extrabold text-white text-center drop-shadow-lg ${orbitron.className}`}>
+            Admin Login
+          </h1>
+          <input
+            type="password"
+            placeholder="Enter Admin Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="bg-white/5 text-white placeholder-gray-400 border border-gray-700 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
+            required
+          />
+          <button
+            type="submit"
+            className="px-6 py-3 bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-semibold rounded-full hover:from-indigo-600 hover:to-purple-700 transition shadow-md"
           >
-            <h1 className="text-3xl font-extrabold text-teal-600 text-center">
-              Admin Login
-            </h1>
-            <input
-              type="password"
-              placeholder="Enter Admin Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="border px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-400 transition text-gray-900 font-medium"
-              required
-            />
-            <button
-              type="submit"
-              className="px-6 py-3 bg-teal-600 text-white font-semibold rounded-xl hover:bg-teal-700 transition"
-            >
-              Login
-            </button>
-          </form>
-        </section>
+            Login
+          </button>
+        </form>
       </main>
     );
   }
@@ -151,78 +164,81 @@ export default function AdminPage() {
   // --- Admin Dashboard ---
   return (
     <main className="embossed-bg min-h-screen flex flex-col">
+       <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-0">
+          <div className="absolute top-10 left-10 w-24 h-24 bg-indigo-500 rounded-full mix-blend-screen filter blur-3xl opacity-40 animate-pulse"></div>
+          <div className="absolute bottom-20 right-20 w-32 h-32 bg-pink-500 rounded-full mix-blend-screen filter blur-3xl opacity-40 animate-pulse"></div>
+          <div className="absolute top-1/4 right-1/4 w-28 h-28 bg-blue-500 rounded-full mix-blend-screen filter blur-3xl opacity-40 animate-pulse animation-delay-2000"></div>
+          <div className="absolute bottom-1/3 left-1/4 w-36 h-36 bg-purple-500 rounded-full mix-blend-screen filter blur-3xl opacity-40 animate-pulse animation-delay-4000"></div>
+        </div>
       <Navbar />
-      <section className="container mx-auto py-10 px-4">
+      <section className="container mx-auto py-10 px-4 relative z-10">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4 w-full">
-          <h1 className="text-3xl font-extrabold text-teal-600">
+          <h1 className={`text-3xl font-extrabold text-indigo-400 drop-shadow-md ${orbitron.className}`}>
             Admin Dashboard
           </h1>
-          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto bg-white p-4 rounded-2xl shadow-md">
+          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto bg-white/10 backdrop-blur-md p-4 rounded-2xl shadow-md">
             <input
               type="text"
-              placeholder="Search by name, email or event"
+              placeholder="Search..."
               value={filterText}
               onChange={(e) => setFilterText(e.target.value)}
-              className="w-full sm:w-auto px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-400 transition shadow-sm text-gray-900 font-medium bg-white"
+              className="w-full sm:w-auto px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 transition shadow-sm text-white font-medium bg-white/5 border border-gray-700 placeholder-gray-400"
             />
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="w-full sm:w-auto px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-400 transition shadow-sm text-gray-900 font-medium bg-white"
+              className="w-full sm:w-auto px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 transition shadow-sm text-white font-medium bg-white/5 border border-gray-700"
             >
-              <option value="all">All Statuses</option>
-              <option value="verified">Verified</option>
-              <option value="pending">Pending</option>
+              <option value="all" className="bg-gray-800">All Statuses</option>
+              <option value="verified" className="bg-gray-800">Verified</option>
+              <option value="pending" className="bg-gray-800">Pending</option>
             </select>
             <button
               onClick={exportToCSV}
-              className="px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 font-semibold transition shadow"
+              className="px-4 py-2 bg-gradient-to-br from-green-500 to-teal-600 text-white rounded-xl hover:from-green-600 hover:to-teal-700 font-semibold transition shadow"
             >
               ⬇ Export CSV
             </button>
           </div>
         </div>
 
-        <div className="overflow-x-auto rounded-3xl shadow-xl bg-white">
+        <div className="overflow-x-auto rounded-3xl shadow-xl bg-white/10 backdrop-blur-md">
           {loading ? (
-            <p className="p-6 text-center text-gray-600">Loading registrations...</p>
+            <p className="p-6 text-center text-gray-400">Loading registrations...</p>
           ) : filteredRegistrations.length === 0 ? (
-            <p className="p-6 text-center text-gray-600">No registrations found.</p>
+            <p className="p-6 text-center text-gray-400">No registrations found.</p>
           ) : (
-            <table className="w-full text-left">
-              <thead className="bg-teal-100">
-                <tr>
-                  {[
-                    "Name", "Email", "Phone", "Event", "Txn ID",
-                    "Screenshot", "Status", "Registered At",
-                  ].map((heading) => (
-                    <th
-                      key={heading}
-                      className="px-4 py-3 text-teal-800 font-semibold text-sm uppercase tracking-wider"
-                    >
-                      {heading}
-                    </th>
-                  ))}
+            <table className="w-full text-left table-auto">
+              <thead>
+                <tr className="bg-white/10 text-gray-300">
+                  <th className="px-4 py-3 text-sm uppercase tracking-wider">Name</th>
+                  <th className="px-4 py-3 text-sm uppercase tracking-wider hidden sm:table-cell">Email</th>
+                  <th className="px-4 py-3 text-sm uppercase tracking-wider hidden sm:table-cell">Phone</th>
+                  <th className="px-4 py-3 text-sm uppercase tracking-wider">Event</th>
+                  <th className="px-4 py-3 text-sm uppercase tracking-wider hidden md:table-cell">Txn ID</th>
+                  <th className="px-4 py-3 text-sm uppercase tracking-wider">Screenshot</th>
+                  <th className="px-4 py-3 text-sm uppercase tracking-wider">Status</th>
+                  <th className="px-4 py-3 text-sm uppercase tracking-wider hidden lg:table-cell">Registered At</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredRegistrations.map((r) => (
                   <tr
                     key={r.id}
-                    className="bg-white border-b border-gray-200 hover:bg-gray-50 transition"
+                    className="border-b border-gray-700 hover:bg-white/5 transition"
                   >
-                    <td className="px-4 py-3 text-gray-900 font-medium">{r.name}</td>
-                    <td className="px-4 py-3 text-gray-700">{r.email}</td>
-                    <td className="px-4 py-3 text-gray-700">{r.phone}</td>
-                    <td className="px-4 py-3 text-gray-700">{r.event}</td>
-                    <td className="px-4 py-3 text-gray-700">{r.transaction_id || "-"}</td>
+                    <td className="px-4 py-3 text-white font-medium whitespace-nowrap">{r.name}</td>
+                    <td className="px-4 py-3 text-gray-300 hidden sm:table-cell">{r.email}</td>
+                    <td className="px-4 py-3 text-gray-300 hidden sm:table-cell">{r.phone}</td>
+                    <td className="px-4 py-3 text-gray-300 whitespace-nowrap">{r.event}</td>
+                    <td className="px-4 py-3 text-gray-300 hidden md:table-cell">{r.transaction_id || "-"}</td>
                     <td className="px-4 py-3">
                       {r.payment_screenshot ? (
                         <a
                           href={r.payment_screenshot}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-teal-600 underline hover:text-teal-800 font-semibold"
+                          className="text-teal-400 underline hover:text-teal-200 font-semibold"
                         >
                           View
                         </a>
@@ -242,7 +258,7 @@ export default function AdminPage() {
                         {r.payment_verified ? "VERIFIED" : "PENDING"}
                       </button>
                     </td>
-                    <td className="px-4 py-3 text-gray-700">
+                    <td className="px-4 py-3 text-gray-300 hidden lg:table-cell whitespace-nowrap">
                       {new Date(r.created_at).toLocaleString()}
                     </td>
                   </tr>
